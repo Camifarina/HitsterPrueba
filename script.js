@@ -7,7 +7,16 @@ function mostrarReglas() {
     document.getElementById("menu").style.display = "none";
     document.getElementById("escaner").style.display = "block";
   
+    // 1. Solicitar permiso a la cámara
+  navigator.mediaDevices.getUserMedia({ video: true }).then(() => {
+    // 2. Si se aceptó el permiso, iniciar el escáner
     iniciarEscaner();
+  }).catch(err => {
+    // 3. Si el usuario no da permiso
+    document.getElementById("qr-result").innerText = "Permiso de cámara denegado.";
+    console.error("Permiso denegado o error:", err);
+  });
+
   }
   
   function volverAlMenu() {
@@ -28,8 +37,16 @@ function mostrarReglas() {
         qrbox: 250
       },
       (decodedText) => {
-        qrResult.innerText = `Resultado: ${decodedText}`;
-        html5QrCode.stop();
+        html5QrCode.stop().then(() => {
+          if (/^https?:\/\//i.test(decodedText)) {
+            qrResult.innerText = "Cargando...";
+            setTimeout(() => {
+              window.location.href = decodedText;
+            }, 800); // 800ms para que se vea el mensaje
+          } else {
+            qrResult.innerText = `Código escaneado: ${decodedText}`;
+          }
+        });
       },
       (error) => {
         console.warn(`No se detectó un QR: ${error}`);
