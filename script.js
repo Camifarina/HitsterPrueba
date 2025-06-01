@@ -23,23 +23,22 @@ function mostrarReglas() {
   
     const html5QrCode = new Html5Qrcode("qr-reader");
   
-    Html5Qrcode.getCameras().then(devices => {
-      if (devices && devices.length) {
-        const cameraId = devices[0].id;
-        html5QrCode.start(
-          cameraId,
-          {
-            fps: 10,
-            qrbox: 250
-          },
-          (decodedText) => {
-            qrResult.innerText = `Resultado: ${decodedText}`;
-            html5QrCode.stop();
-          }
-        );
-      }
-    }).catch(err => {
-      qrResult.innerText = `No se pudo acceder a la cámara: ${err}`;
-    });
+    html5QrCode.start(
+        { facingMode: "environment" }, // <- fuerza la cámara trasera
+        {
+          fps: 10,
+          qrbox: 250
+        },
+        (decodedText) => {
+          qrResult.innerText = `Resultado: ${decodedText}`;
+          html5QrCode.stop();
+        },
+        (error) => {
+          console.warn(`No se detectó un QR: ${error}`);
+        }
+      ).catch(err => {
+        qrResult.innerText = `No se pudo acceder a la cámara: ${err}`;
+      });
+      
   }
   
