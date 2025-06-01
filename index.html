@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Juego QR</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="menu">
+    <h1>Juego QR</h1>
+    <button onclick="mostrarReglas()">Ver reglas del juego</button>
+    <button onclick="mostrarEscaner()">Escanear QR</button>
+  </main>
+
+  <section id="reglas" class="pantalla-oculta">
+    <h2>Reglas del juego</h2>
+    <p>Aquí irán las reglas del juego que tú definas.</p>
+    <button onclick="volverAlMenu()">Volver al menú</button>
+  </section>
+
+  <section id="escaner" class="pantalla-oculta">
+    <h2>Escanear código QR</h2>
+    <div id="qr-reader" style="width: 100%"></div>
+    <div id="qr-result"></div>
+    <button onclick="volverAlMenu()">Volver al menú</button>
+  </section>
+
+  <script src="lib/html5-qrcode.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
