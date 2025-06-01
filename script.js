@@ -37,8 +37,48 @@ function mostrarReglas() {
     document.getElementById("reglas").style.display = "none";
     document.getElementById("escaner").style.display = "none";
   }
-  
   function iniciarEscaner() {
+    const qrResult = document.getElementById("qr-result");
+    qrResult.innerText = "";
+    
+    const html5QrCode = new Html5Qrcode("qr-reader");
+  
+    html5QrCode.start(
+      { facingMode: "environment" },  // más tolerante
+      { fps: 10, qrbox: 250 },
+      async (decodedText) => {
+        await html5QrCode.stop();
+        qrResult.innerText = "Reproduciendo canción...";
+  
+        try {
+          const docRef = doc(db, "canciones", decodedText);
+          const docSnap = await getDoc(docRef);
+  
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            const url = data.url;
+  
+            const audio = new Audio(url);
+            audio.autoplay = true;
+            await audio.play();
+          } else {
+            qrResult.innerText = "No se encontró esa canción.";
+          }
+        } catch (e) {
+          qrResult.innerText = "Error al buscar la canción.";
+          console.error(e);
+        }
+      },
+      (error) => {
+        console.warn(`No se detectó un QR: ${error}`);
+      }
+    ).catch(err => {
+      qrResult.innerText = `No se pudo iniciar la cámara: ${err}`;
+      console.error(err);
+    });
+  }
+  
+  /* function iniciarEscaner() {
     const qrResult = document.getElementById("qr-result");
     qrResult.innerText = "";
     const html5QrCode = new Html5Qrcode("qr-reader");
@@ -74,7 +114,7 @@ function mostrarReglas() {
           console.error(e);
         }
       },
-      
+
       /* (decodedText) => {
         html5QrCode.stop().then(() => {
           if (/^https?:\/\//i.test(decodedText)) {
@@ -86,12 +126,14 @@ function mostrarReglas() {
             qrResult.innerText = `Código escaneado: ${decodedText}`;
           }
         });
-      }, */
+      }, 
+
       (error) => {
         console.warn(`No se detectó un QR: ${error}`);
       }
     ).catch(err => {
       qrResult.innerText = `No se pudo iniciar la cámara: ${err}`;
     });
-  }
+  } 
+  */
   
