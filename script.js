@@ -24,7 +24,7 @@ function mostrarReglas() {
     const html5QrCode = new Html5Qrcode("qr-reader");
   
     html5QrCode.start(
-        { facingMode: "environment" }, // <- fuerza la cámara trasera
+        { facingMode: { exact: "environment" } }, // intenta usar específicamente la cámara trasera
         {
           fps: 10,
           qrbox: 250
@@ -39,6 +39,7 @@ function mostrarReglas() {
       ).catch(err => {
         qrResult.innerText = `No se pudo acceder a la cámara: ${err}`;
       });
+      
       
   }
   
