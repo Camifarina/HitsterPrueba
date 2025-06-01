@@ -49,31 +49,22 @@ function mostrarReglas() {
     const html5QrCode = new Html5Qrcode("qr-reader");
   
     html5QrCode.start(
-      { facingMode: { exact: "environment" } },
-      { fps: 10, qrbox: 250 },
-      async (decodedText) => {
-        await html5QrCode.stop();
-        qrResult.innerText = "Reproduciendo canción...";
-  
-        // Buscar canción en Firestore
-        try {
-          const docRef = doc(db, "canciones", decodedText);
-          const docSnap = await getDoc(docRef);
-  
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            const url = data.url;
-  
-            const audio = new Audio(url);
-            audio.autoplay = true;
-            await audio.play();
+      { facingMode: { exact: "environment" } }, // fuerza la cámara trasera
+      {
+        fps: 10,
+        qrbox: 250
+      },
+      (decodedText) => {
+        html5QrCode.stop().then(() => {
+          if (/^https?:\/\//i.test(decodedText)) {
+            qrResult.innerText = "Cargando...";
+            setTimeout(() => {
+              window.location.href = decodedText;
+            }, 800); // 800ms para que se vea el mensaje
           } else {
-            qrResult.innerText = "No se encontró esa canción.";
+            qrResult.innerText = `Código escaneado: ${decodedText}`;
           }
-        } catch (e) {
-          qrResult.innerText = "Error al buscar la canción.";
-          console.error(e);
-        }
+        });
       },
       (error) => {
         console.warn(`No se detectó un QR: ${error}`);
@@ -82,5 +73,4 @@ function mostrarReglas() {
       qrResult.innerText = `No se pudo iniciar la cámara: ${err}`;
     });
   }
-  
   
