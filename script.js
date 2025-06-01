@@ -1,17 +1,5 @@
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDHNImx1Be-akVRcPpwUNTy87A6b1TxveE",
-    authDomain: "cancioneshitster.firebaseapp.com",
-    projectId: "cancioneshitster",
-    storageBucket: "cancioneshitster.firebasestorage.app",
-    messagingSenderId: "518062114537",
-    appId: "1:518062114537:web:855b9f68ceb7eff9679278",
-    measurementId: "G-BNMMCDP9Q9"
-  };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const analytics = getAnalytics(app);
 
 
 function mostrarReglas() {
