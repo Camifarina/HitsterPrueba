@@ -1,6 +1,15 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-
-
+const firebaseConfig = {
+    apiKey: "AIzaSyDHNImx1Be-akVRcPpwUNTy87A6b1TxveE",
+    authDomain: "cancioneshitster.firebaseapp.com",
+    projectId: "cancioneshitster"
+  };
+  
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  
 
 function mostrarReglas() {
     document.getElementById("menu").style.display = "none";
