@@ -1,5 +1,20 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDHNImx1Be-akVRcPpwUNTy87A6b1TxveE",
+    authDomain: "cancioneshitster.firebaseapp.com",
+    projectId: "cancioneshitster",
+    storageBucket: "cancioneshitster.firebasestorage.app",
+    messagingSenderId: "518062114537",
+    appId: "1:518062114537:web:855b9f68ceb7eff9679278",
+    measurementId: "G-BNMMCDP9Q9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const analytics = getAnalytics(app);
+
 
 function mostrarReglas() {
     document.getElementById("menu").style.display = "none";
@@ -34,22 +49,31 @@ function mostrarReglas() {
     const html5QrCode = new Html5Qrcode("qr-reader");
   
     html5QrCode.start(
-      { facingMode: { exact: "environment" } }, // fuerza la cámara trasera
-      {
-        fps: 10,
-        qrbox: 250
-      },
-      (decodedText) => {
-        html5QrCode.stop().then(() => {
-          if (/^https?:\/\//i.test(decodedText)) {
-            qrResult.innerText = "Cargando...";
-            setTimeout(() => {
-              window.location.href = decodedText;
-            }, 800); // 800ms para que se vea el mensaje
+      { facingMode: { exact: "environment" } },
+      { fps: 10, qrbox: 250 },
+      async (decodedText) => {
+        await html5QrCode.stop();
+        qrResult.innerText = "Reproduciendo canción...";
+  
+        // Buscar canción en Firestore
+        try {
+          const docRef = doc(db, "canciones", decodedText);
+          const docSnap = await getDoc(docRef);
+  
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            const url = data.url;
+  
+            const audio = new Audio(url);
+            audio.autoplay = true;
+            await audio.play();
           } else {
-            qrResult.innerText = `Código escaneado: ${decodedText}`;
+            qrResult.innerText = "No se encontró esa canción.";
           }
-        });
+        } catch (e) {
+          qrResult.innerText = "Error al buscar la canción.";
+          console.error(e);
+        }
       },
       (error) => {
         console.warn(`No se detectó un QR: ${error}`);
@@ -58,4 +82,5 @@ function mostrarReglas() {
       qrResult.innerText = `No se pudo iniciar la cámara: ${err}`;
     });
   }
+  
   
