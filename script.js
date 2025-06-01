@@ -36,6 +36,8 @@ function mostrarReglas() {
   
       const cameraId = backCamera ? backCamera.id : devices[0].id;
   
+
+      
       html5QrCode.start(
         cameraId,
         {
