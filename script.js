@@ -21,40 +21,21 @@ function mostrarReglas() {
     qrResult.innerText = "";
     const html5QrCode = new Html5Qrcode("qr-reader");
   
-    Html5Qrcode.getCameras().then(devices => {
-      if (devices.length === 0) {
-        qrResult.innerText = "No se encontraron cámaras";
-        return;
+    html5QrCode.start(
+      { facingMode: { exact: "environment" } }, // fuerza la cámara trasera
+      {
+        fps: 10,
+        qrbox: 250
+      },
+      (decodedText) => {
+        qrResult.innerText = `Resultado: ${decodedText}`;
+        html5QrCode.stop();
+      },
+      (error) => {
+        console.warn(`No se detectó un QR: ${error}`);
       }
-  
-      // Intenta encontrar una cámara trasera
-      let backCamera = devices.find(device => 
-        device.label.toLowerCase().includes('back') ||
-        device.label.toLowerCase().includes('rear') ||
-        device.label.toLowerCase().includes('environment')
-      );
-  
-      const cameraId = backCamera ? backCamera.id : devices[0].id;
-  
-
-      
-      html5QrCode.start(
-        cameraId,
-        {
-          fps: 10,
-          qrbox: 250
-        },
-        (decodedText) => {
-          qrResult.innerText = `Resultado: ${decodedText}`;
-          html5QrCode.stop();
-        },
-        (error) => {
-          console.warn(`No se detectó un QR: ${error}`);
-        }
-      ).catch(err => {
-        qrResult.innerText = `No se pudo iniciar la cámara: ${err}`;
-      });
+    ).catch(err => {
+      qrResult.innerText = `No se pudo iniciar la cámara: ${err}`;
     });
   }
-  
   
