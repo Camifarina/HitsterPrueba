@@ -49,7 +49,33 @@ function mostrarReglas() {
         fps: 10,
         qrbox: 250
       },
-      (decodedText) => {
+
+      async (decodedText) => {
+        await html5QrCode.stop();
+        qrResult.innerText = "Reproduciendo canción...";
+  
+        // Buscar canción en Firestore
+        try {
+          const docRef = doc(db, "canciones", decodedText);
+          const docSnap = await getDoc(docRef);
+  
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            const url = data.url;
+  
+            const audio = new Audio(url);
+            audio.autoplay = true;
+            await audio.play();
+          } else {
+            qrResult.innerText = "No se encontró esa canción.";
+          }
+        } catch (e) {
+          qrResult.innerText = "Error al buscar la canción.";
+          console.error(e);
+        }
+      },
+      
+      /* (decodedText) => {
         html5QrCode.stop().then(() => {
           if (/^https?:\/\//i.test(decodedText)) {
             qrResult.innerText = "Cargando...";
@@ -60,7 +86,7 @@ function mostrarReglas() {
             qrResult.innerText = `Código escaneado: ${decodedText}`;
           }
         });
-      },
+      }, */
       (error) => {
         console.warn(`No se detectó un QR: ${error}`);
       }
