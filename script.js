@@ -78,7 +78,7 @@ function debugLog(msg) {
         const docSnap = await docRef.get();
         debugLog("Buscando documento con ID: " + decodedText);
       
-        if (docSnap.exists()) {
+        if ((typeof docSnap.exists === "function" && docSnap.exists()) || docSnap.exists === true) {
           const data = docSnap.data();
           debugLog("Documento encontrado: " + JSON.stringify(data));
       
