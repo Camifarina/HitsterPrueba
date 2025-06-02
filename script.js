@@ -49,6 +49,14 @@ function volverAlMenu() {
   document.getElementById("escaner").style.display = "none";
 }
 
+function debugLog(msg) {
+  const consoleDiv = document.getElementById("debug-console");
+  const time = new Date().toLocaleTimeString();
+  consoleDiv.innerHTML += `<div>[${time}] ${msg}</div>`;
+  consoleDiv.scrollTop = consoleDiv.scrollHeight;
+}
+
+
 function iniciarEscaner() {
   const qrResult = document.getElementById("qr-result");
   qrResult.innerText = "";
@@ -60,20 +68,20 @@ function iniciarEscaner() {
     async (decodedText) => {
       await html5QrCode.stop();
       qrResult.innerText = "Reproduciendo canción...";
-      console.log("QR escaneado:", decodedText);
+      debugLog("QR escaneado:", decodedText);
 
       try {
         const docRef = doc(db, "canciones", decodedText);
         const docSnap = await getDoc(docRef);
 
-        console.log("Buscando documento con ID:", decodedText);
+        debugLog("Buscando documento con ID:", decodedText);
 
         if (docSnap.exists()) {
           const data = docSnap.data();
-          console.log("Documento encontrado:", data);
+          debugLog("Documento encontrado:", data);
 
           const url = data.url;
-          console.log("URL a reproducir:", url);
+          debugLog("URL a reproducir:", url);
 
           const audio = new Audio(url);
           audio.autoplay = true;
@@ -81,10 +89,12 @@ function iniciarEscaner() {
         } else {
           qrResult.innerText = "No se encontró esa canción.";
           console.error("Documento no encontrado en Firestore.");
+          debugLog("Documento no encontrado en Firestore.");
         }
       } catch (e) {
         qrResult.innerText = "Error al buscar la canción.";
         console.error("Error al acceder a Firestore:", e);
+        debugLog("Error al acceder a Firestore:", e);
       }
     },
     (error) => {
