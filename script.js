@@ -60,7 +60,7 @@ function debugLog(msg) {
   consoleDiv.scrollTop = consoleDiv.scrollHeight;
 }
 
-  function iniciarEscaner() {
+function iniciarEscaner() {
   const qrResult = document.getElementById("qr-result");
   qrResult.innerText = "";
   const html5QrCode = new Html5Qrcode("qr-reader");
@@ -70,31 +70,32 @@ function debugLog(msg) {
     { fps: 10, qrbox: 250 },
     async (decodedText) => {
       await html5QrCode.stop();
-      qrResult.innerText = "Reproduciendo canción...";
-      debugLog("QR escaneado: " + decodedText);
+      qrResult.innerHTML = 'Canción lista para reproducir. <button id="play-btn">Reproducir</button>';
 
-      try {
-        const docRef = db.collection("canciones").doc(decodedText);
-        const docSnap = await docRef.get();
-        debugLog("Buscando documento con ID: " + decodedText);
-      
-        if ((typeof docSnap.exists === "function" && docSnap.exists()) || docSnap.exists === true) {
-          const data = docSnap.data();
-          debugLog("Documento encontrado: " + JSON.stringify(data));
-      
-          const audio = new Audio(data.url);
-          audio.autoplay = true;
-          await audio.play();
-        } else {
-          qrResult.innerText = "No se encontró esa canción.";
-          debugLog("Documento no encontrado en Firestore.");
+      const playBtn = document.getElementById('play-btn');
+      playBtn.addEventListener('click', async () => {
+        try {
+          const docRef = db.collection("canciones").doc(decodedText);
+          const docSnap = await docRef.get();
+          debugLog("Buscando documento con ID: " + decodedText);
+
+          //if ((typeof docSnap.exists === "function" && docSnap.exists()) || docSnap.exists === true) {
+          if (docSnap.exists) {
+            const data = docSnap.data();
+            debugLog("Documento encontrado: " + JSON.stringify(data));
+
+            const audio = new Audio(data.url);
+            await audio.play();
+          } else {
+            qrResult.innerText = "No se encontró esa canción.";
+            debugLog("Documento no encontrado en Firestore.");
+          }
+        } catch (e) {
+          qrResult.innerText = "Error al buscar la canción.";
+          console.error(e);
+          debugLog("Error al acceder a Firestore: " + e.message);
         }
-      } catch (e) {
-        qrResult.innerText = "Error al buscar la canción.";
-        console.error(e);
-        debugLog("Error al acceder a Firestore: " + e.message);
-      }
-      
+      });
     },
     (error) => {
       console.warn(`No se detectó un QR: ${error}`);
@@ -102,6 +103,6 @@ function debugLog(msg) {
   ).catch(err => {
     qrResult.innerText = `No se pudo iniciar la cámara: ${err}`;
   });
-} 
+}
 
 
