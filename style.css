@@ -4,9 +4,9 @@ body {
     font-family: sans-serif;
     background-color: #f9f9f9;
     text-align: center;
-  }
-  
-  button {
+}
+
+button {
     display: block;
     margin: 10px auto;
     padding: 12px 24px;
@@ -16,15 +16,14 @@ body {
     background-color: #007bff;
     color: white;
     cursor: pointer;
-  }
+}
 
-  
-  
-  button:hover {
+
+
+button:hover {
     background-color: #0056b3;
-  }
-  
-  .pantalla-oculta {
+}
+
+.pantalla-oculta {
     display: none;
-  }
-  
+}
