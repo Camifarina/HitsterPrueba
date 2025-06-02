@@ -63,7 +63,7 @@ function iniciarEscaner() {
     { fps: 10, qrbox: 250 },
     async (decodedText) => {
       await html5QrCode.stop();
-      qrResult.innerHTML = 'Canción lista para reproducir. <button id="play-btn">Reproducir</button>';
+      qrResult.innerHTML = 'Canción lista para reproducir';
 
       /*    const playBtn = document.getElementById('play-btn');
             playBtn.addEventListener('click', async () => { */
