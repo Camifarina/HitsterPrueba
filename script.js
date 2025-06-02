@@ -60,6 +60,53 @@ function iniciarEscaner() {
     async (decodedText) => {
       await html5QrCode.stop();
       qrResult.innerText = "Reproduciendo canción...";
+      console.log("QR escaneado:", decodedText);
+
+      try {
+        const docRef = doc(db, "canciones", decodedText);
+        const docSnap = await getDoc(docRef);
+
+        console.log("Buscando documento con ID:", decodedText);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          console.log("Documento encontrado:", data);
+
+          const url = data.url;
+          console.log("URL a reproducir:", url);
+
+          const audio = new Audio(url);
+          audio.autoplay = true;
+          await audio.play();
+        } else {
+          qrResult.innerText = "No se encontró esa canción.";
+          console.error("Documento no encontrado en Firestore.");
+        }
+      } catch (e) {
+        qrResult.innerText = "Error al buscar la canción.";
+        console.error("Error al acceder a Firestore:", e);
+      }
+    },
+    (error) => {
+      console.warn(`No se detectó un QR: ${error}`);
+    }
+  ).catch(err => {
+    qrResult.innerText = `No se pudo iniciar la cámara: ${err}`;
+  });
+}
+
+
+/* function iniciarEscaner() {
+  const qrResult = document.getElementById("qr-result");
+  qrResult.innerText = "";
+  const html5QrCode = new Html5Qrcode("qr-reader");
+
+  html5QrCode.start(
+    { facingMode: { exact: "environment" } },
+    { fps: 10, qrbox: 250 },
+    async (decodedText) => {
+      await html5QrCode.stop();
+      qrResult.innerText = "Reproduciendo canción...";
 
       try {
         const docRef = db.collection("canciones").doc(decodedText);
@@ -84,39 +131,6 @@ function iniciarEscaner() {
   ).catch(err => {
     qrResult.innerText = `No se pudo iniciar la cámara: ${err}`;
   });
-}
-
-
-/* function iniciarEscaner() {
- const qrResult = document.getElementById("qr-result");
- qrResult.innerText = "";
- const html5QrCode = new Html5Qrcode("qr-reader");
- 
- html5QrCode.start(
-   { facingMode: { exact: "environment" } }, // fuerza la cámara trasera
-   {
-     fps: 10,
-     qrbox: 250
-   },
-   (decodedText) => {
-     html5QrCode.stop().then(() => {
-       if (/^https?:\/\//i.test(decodedText)) {
-         qrResult.innerText = "Cargando...";
-         setTimeout(() => {
-           window.location.href = decodedText;
-         }, 800); // 800ms para que se vea el mensaje
-       } else {
-         qrResult.innerText = `Código escaneado: ${decodedText}`;
-       }
-     });
-   }, 
-
-   (error) => {
-     console.warn(`No se detectó un QR: ${error}`);
-   }
- ).catch(err => {
-   qrResult.innerText = `No se pudo iniciar la cámara: ${err}`;
- });
-}  */
+} */
 
 
