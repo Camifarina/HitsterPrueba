@@ -71,29 +71,30 @@ function debugLog(msg) {
     async (decodedText) => {
       await html5QrCode.stop();
       qrResult.innerText = "Reproduciendo canción...";
-      debugLog("QR escaneado:", decodedText);
+      debugLog("QR escaneado: " + decodedText);
 
       try {
         const docRef = db.collection("canciones").doc(decodedText);
         const docSnap = await docRef.get();
-        debugLog("Buscando documento con ID:", decodedText);
-
-        if (docSnap.exists) {
+        debugLog("Buscando documento con ID: " + decodedText);
+      
+        if (docSnap.exists()) {
           const data = docSnap.data();
-          debugLog("Documento encontrado:", data);
-
+          debugLog("Documento encontrado: " + JSON.stringify(data));
+      
           const audio = new Audio(data.url);
           audio.autoplay = true;
           await audio.play();
         } else {
           qrResult.innerText = "No se encontró esa canción.";
-        debugLog("Documento no encontrado en Firestore.");
+          debugLog("Documento no encontrado en Firestore.");
         }
       } catch (e) {
         qrResult.innerText = "Error al buscar la canción.";
         console.error(e);
-        debugLog("Error al acceder a Firestore.");
+        debugLog("Error al acceder a Firestore: " + e.message);
       }
+      
     },
     (error) => {
       console.warn(`No se detectó un QR: ${error}`);
