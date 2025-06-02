@@ -54,6 +54,7 @@ function iniciarEscaner() {
   const playButton = document.getElementById("play-button");
 
   qrResult.innerText = "";
+  debugLog("mostrar boton play")
   playButton.style.display = "none"; // ocultar botón al iniciar
 
   const html5QrCode = new Html5Qrcode("qr-reader");
@@ -84,6 +85,7 @@ function iniciarEscaner() {
           playButton.style.display = "inline-block"; // mostrar botón
 
           // Configurar evento para reproducir la canción al presionar el botón
+          playButton.onclick = null;
           playButton.onclick = () => {
             currentAudio.play();
             qrResult.innerText = "Reproduciendo canción...";
