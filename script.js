@@ -1,15 +1,4 @@
-/* import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDHNImx1Be-akVRcPpwUNTy87A6b1TxveE",
-    authDomain: "cancioneshitster.firebaseapp.com",
-    projectId: "cancioneshitster"
-  };
-  
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-   */
+let currentAudio = null;
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -62,7 +51,11 @@ function debugLog(msg) {
 
 function iniciarEscaner() {
   const qrResult = document.getElementById("qr-result");
+  const playButton = document.getElementById("play-button");
+
   qrResult.innerText = "";
+  playButton.style.display = "none"; // ocultar botón al iniciar
+
   const html5QrCode = new Html5Qrcode("qr-reader");
 
   html5QrCode.start(
@@ -72,36 +65,47 @@ function iniciarEscaner() {
       await html5QrCode.stop();
       qrResult.innerHTML = 'Canción lista para reproducir. <button id="play-btn">Reproducir</button>';
 
-      const playBtn = document.getElementById('play-btn');
-      playBtn.addEventListener('click', async () => {
-        try {
-          const docRef = db.collection("canciones").doc(decodedText);
-          const docSnap = await docRef.get();
-          debugLog("Buscando documento con ID: " + decodedText);
+      /*    const playBtn = document.getElementById('play-btn');
+            playBtn.addEventListener('click', async () => { */
+      try {
+        const docRef = db.collection("canciones").doc(decodedText);
+        const docSnap = await docRef.get();
+        //debugLog("Buscando documento con ID: " + decodedText);
 
-          //if ((typeof docSnap.exists === "function" && docSnap.exists()) || docSnap.exists === true) {
-          if (docSnap.exists) {
-            const data = docSnap.data();
-            debugLog("Documento encontrado: " + JSON.stringify(data));
 
-            const audio = new Audio(data.url);
-            await audio.play();
-          } else {
-            qrResult.innerText = "No se encontró esa canción.";
-            debugLog("Documento no encontrado en Firestore.");
-          }
-        } catch (e) {
-          qrResult.innerText = "Error al buscar la canción.";
-          console.error(e);
-          debugLog("Error al acceder a Firestore: " + e.message);
+        if (docSnap.exists) {
+          const data = docSnap.data();
+          //debugLog("Documento encontrado: " + JSON.stringify(data));
+
+          // Guardamos el audio para reproducir cuando se presione el botón
+          currentAudio = new Audio(data.url);
+          currentAudio.autoplay = false;
+
+          playButton.style.display = "inline-block"; // mostrar botón
+
+          // Configurar evento para reproducir la canción al presionar el botón
+          playButton.onclick = () => {
+            currentAudio.play();
+            qrResult.innerText = "Reproduciendo canción...";
+          };
+        } else {
+          qrResult.innerText = "No se encontró esa canción.";
+          //debugLog("Documento no encontrado en Firestore.");
+          playButton.style.display = "none";
         }
-      });
+      } catch (e) {
+        qrResult.innerText = "Error al buscar la canción.";
+        console.error(e);
+        //debugLog("Error al acceder a Firestore: " + e.message);
+        playButton.style.display = "none";
+      }
     },
     (error) => {
       console.warn(`No se detectó un QR: ${error}`);
     }
   ).catch(err => {
     qrResult.innerText = `No se pudo iniciar la cámara: ${err}`;
+    playButton.style.display = "none";
   });
 }
 
