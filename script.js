@@ -13,7 +13,7 @@ const firebaseConfig = {
 
 // Configuración de Firebase
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
+  apiKey: "AIzaSyDHNImx1Be-akVRcPpwUNTy87A6b1TxveE",
   authDomain: "cancioneshitster.firebaseapp.com",
   projectId: "cancioneshitster"
 };
