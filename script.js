@@ -36,25 +36,6 @@ function mostrarEscaner() {
 
 }
 
-function volverAlMenu() {
-  // Detener y reiniciar el audio si está reproduciéndose
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio.currentTime = 0;
-  }
-  document.getElementById("menu").style.display = "block";
-  document.getElementById("reglas").style.display = "none";
-  document.getElementById("escaner").style.display = "none";
-
-  // Ocultar botón de reproducción y limpiar estado
-  const playButton = document.getElementById("play-toggle-button");
-  playButton.style.display = "none";
-  playButton.innerText = "Reproducir";
-
-  // Limpiar mensaje del resultado QR
-  document.getElementById("qr-result").innerText = "";
-}
-
 /* function debugLog(msg) {
   const consoleDiv = document.getElementById("debug-console");
   const time = new Date().toLocaleTimeString();
@@ -135,5 +116,22 @@ function iniciarEscaner() {
   });
 }
 
+function volverAlMenu() {
+  // Detener y reiniciar el audio si está reproduciéndose
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+  }
+  document.getElementById("menu").style.display = "block";
+  document.getElementById("reglas").style.display = "none";
+  document.getElementById("escaner").style.display = "none";
 
+  // Ocultar botón de reproducción y limpiar estado
+  const playButton = document.getElementById("play-toggle-button");
+  playButton.style.display = "none";
+  playButton.innerText = "Reproducir";
+
+  // Limpiar mensaje del resultado QR
+  document.getElementById("qr-result").innerText = "";
+}
 
