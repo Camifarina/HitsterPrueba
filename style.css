@@ -47,6 +47,11 @@ html {
     background-color: #E8CAAE;
 }
 
+.btn, #play-button{
+    border: none;
+    background-color: transparent;
+}
+
 #play-button::after {
     content: attr(data-estado);
     font-size: 1.2rem;
