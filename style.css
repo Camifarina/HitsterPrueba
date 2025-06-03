@@ -47,7 +47,8 @@ html {
     background-color: #E8CAAE;
 }
 
-.btn, #play-button{
+.btn,
+#play-button {
     border: none;
     background-color: transparent;
 }
@@ -78,4 +79,24 @@ html {
 
 .btn-play.estado-pause[data-estado="pause"]::after {
     content: "Pausar canción";
+}
+
+.loader {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #333;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
