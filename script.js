@@ -15,6 +15,70 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+window.addEventListener("DOMContentLoaded", () => {
+  mostrarPantalla("pantalla-inicial");
+  setTimeout(() => mostrarPantalla("menu"), 2000);
+});
+
+function mostrarPantalla(id) {
+  document.querySelectorAll(".pantalla").forEach(p => p.classList.add("pantalla-oculta"));
+  document.getElementById(id).classList.remove("pantalla-oculta");
+}
+
+function mostrarReglas() {
+  mostrarPantalla("reglas");
+}
+
+function mostrarEscaner() {
+  mostrarPantalla("escaner");
+  navigator.mediaDevices.getUserMedia({ video: true }).then(() => iniciarEscaner()).catch(err => {
+    alert("Permiso de cámara denegado.");
+    console.error(err);
+  });
+}
+
+function iniciarEscaner() {
+  const html5QrCode = new Html5Qrcode("qr-reader");
+
+  html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 },
+    async (decodedText) => {
+      await html5QrCode.stop();
+      const docRef = db.collection("canciones").doc(decodedText);
+      const docSnap = await docRef.get();
+
+      if (docSnap.exists) {
+        const data = docSnap.data();
+        currentAudio = new Audio(data.url);
+        currentAudio.autoplay = false;
+
+        mostrarPantalla("reproductor");
+
+        document.getElementById("play-button").onclick = () => {
+          currentAudio.play();
+          document.getElementById("repro-status").innerText = "Reproduciendo canción...";
+        };
+      } else {
+        alert("No se encontró esa canción.");
+        volverAlMenu();
+      }
+    },
+    error => {
+      console.warn(`QR no detectado: ${error}`);
+    }
+  );
+}
+
+function volverAlMenu() {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
+  }
+  mostrarPantalla("menu");
+}
+
+
+/* 
 function mostrarReglas() {
   document.getElementById("menu").style.display = "none";
   document.getElementById("reglas").style.display = "block";
@@ -41,7 +105,7 @@ function mostrarEscaner() {
   const time = new Date().toLocaleTimeString();
   consoleDiv.innerHTML += `<div>[${time}] ${msg}</div>`;
   consoleDiv.scrollTop = consoleDiv.scrollHeight;
-} */
+} 
 
 function iniciarEscaner() {
   const qrResult = document.getElementById("qr-result");
@@ -135,3 +199,4 @@ function volverAlMenu() {
   document.getElementById("qr-result").innerText = "";
 }
 
+ */

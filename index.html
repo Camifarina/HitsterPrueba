@@ -1,43 +1,54 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Juego QR</title>
+    <title>Hitster AR</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-    <main id="menu">
-        <h1>Juego QR</h1>
+
+    <!-- Pantalla Inicial -->
+    <section id="pantalla-inicial" class="pantalla">
+        <h1 class="titulo-central">Hitster versión argentina</h1>
+    </section>
+
+    <!-- Menú Principal -->
+    <main id="menu" class="pantalla pantalla-oculta fondo-azul">
+        <h1 class="titulo">Hitster versión argentina</h1>
         <button onclick="mostrarReglas()">Ver reglas del juego</button>
         <button onclick="mostrarEscaner()">Escanear QR</button>
     </main>
 
-    <section id="reglas" class="pantalla-oculta">
-        <h2>Reglas del juego</h2>
+    <!-- Reglas -->
+    <section id="reglas" class="pantalla pantalla-oculta fondo-reglas">
+        <h2 class="titulo">Reglas del juego</h2>
         <p>Aquí irán las reglas del juego que tú definas.</p>
         <button onclick="volverAlMenu()">Volver al menú</button>
     </section>
 
-
-    <section id="escaner" class="pantalla-oculta">
-        <h2>Escanear código QR</h2>
-        <div id="qr-reader" style="width: 100%"></div>
+    <!-- Escáner -->
+    <section id="escaner" class="pantalla pantalla-oculta fondo-escaner">
+        <div id="qr-reader" style="width: 100%; height: 100%"></div>
         <div id="qr-result"></div>
-        <button id="play-toggle-button" style="display:none;">Reproducir</button>
+    </section>
+
+    <!-- Cargando canción -->
+    <section id="reproductor" class="pantalla pantalla-oculta fondo-cargando">
+        <h2 id="repro-status">Canción lista para reproducir</h2>
+        <button id="play-button">Reproducir canción</button>
         <button onclick="volverAlMenu()">Volver al menú</button>
     </section>
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
+    <!-- QR Scanner -->
     <script src="lib/html5-qrcode.min.js"></script>
     <script src="script.js"></script>
 
-    <!-- <div id="debug-console" style="background: #000; color: #0f0; font-family: monospace; font-size: 12px; padding: 10px; max-height: 200px; overflow-y: auto;"></div> -->
-
 </body>
+
 </html>
