@@ -20,6 +20,15 @@ window.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => mostrarPantalla("menu"), 2000);
 });
 
+// Vinculamos botones del menú
+document.querySelector(".btn-reglas").addEventListener("click", mostrarReglas);
+document.querySelector(".btn-escanear").addEventListener("click", mostrarEscaner);
+
+// Vinculamos todos los botones "Volver al menú"
+document.querySelectorAll(".btn-volver").forEach(btn => {
+  btn.addEventListener("click", volverAlMenu);
+});
+
 function mostrarPantalla(id) {
   document.querySelectorAll(".pantalla").forEach(p => p.classList.add("pantalla-oculta"));
   document.getElementById(id).classList.remove("pantalla-oculta");
@@ -51,19 +60,27 @@ function iniciarEscaner() {
         currentAudio = new Audio(data.url);
         currentAudio.autoplay = false;
 
+        document.getElementById("play-button").setAttribute("data-estado", "play");
         mostrarPantalla("reproductor");
 
         document.getElementById("play-button").onclick = () => {
+          const btn = document.getElementById("play-button");
+          const status = document.getElementById("repro-status");
+
           if (currentAudio.paused) {
             currentAudio.play();
-            document.getElementById("play-button").innerText = "Pausar canción";
-            document.getElementById("repro-status").innerText = "Reproduciendo canción...";
+            btn.classList.remove("estado-play", "estado-pause");
+            btn.classList.add("estado-pause");
+            btn.setAttribute("data-estado", "pause");
+            status.innerText = "Reproduciendo canción...";
           } else {
             currentAudio.pause();
-            document.getElementById("play-button").innerText = "Reproducir canción";
-            document.getElementById("repro-status").innerText = "Canción en pausa";
+            btn.classList.remove("estado-pause");
+            btn.classList.add("estado-play", "estado-pause");
+            btn.setAttribute("data-estado", "play");
+            status.innerText = "Canción en pausa";
           }
-        };        
+        };
       } else {
         alert("No se encontró esa canción.");
         volverAlMenu();
@@ -80,7 +97,7 @@ function volverAlMenu() {
     currentAudio.pause();
     currentAudio.currentTime = 0;
     currentAudio = null;
-    document.getElementById("play-button").innerText = "Reproducir canción";
+    document.getElementById("play-button").setAttribute("data-estado", "play");
     document.getElementById("repro-status").innerText = "Canción lista para reproducir";
   }
   mostrarPantalla("menu");

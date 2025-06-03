@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,30 +16,34 @@
     </section>
 
     <!-- Menú Principal -->
-    <main id="menu" class="pantalla pantalla-oculta fondo-azul">
-        <h1 class="titulo">Hitster versión argentina</h1>
-        <button onclick="mostrarReglas()">Ver reglas del juego</button>
-        <button onclick="mostrarEscaner()">Escanear QR</button>
+    <main id="menu" class="pantalla pantalla-menu">
+        <h1 class="titulo-principal">Hitster versión argentina</h1>
+        <button class="btn btn-escanear" data-texto="Escanear QR"></button>
+        <button class="btn btn-reglas" data-texto="Ver reglas del juego"></button>
     </main>
 
     <!-- Reglas -->
-    <section id="reglas" class="pantalla pantalla-oculta fondo-reglas">
-        <h2 class="titulo">Reglas del juego</h2>
-        <p>Aquí irán las reglas del juego que tú definas.</p>
-        <button onclick="volverAlMenu()">Volver al menú</button>
+    <section id="reglas" class="pantalla pantalla-reglas pantalla-oculta">
+        <h2 class="titulo-reglas">Reglas del juego</h2>
+        <p class="texto-reglas">Aquí irán las reglas del juego que tú definas.</p>
+        <button class="btn btn-volver" data-texto="Volver al menú"></button>
     </section>
 
     <!-- Escáner -->
-    <section id="escaner" class="pantalla pantalla-oculta fondo-escaner">
-        <div id="qr-reader" style="width: 100%; height: 100%"></div>
+    <section id="escaner" class="pantalla pantalla-escaner pantalla-oculta">
+        <h2 class="titulo-escaner">Escanear código QR</h2>
+        <div id="qr-reader" style="width: 100%"></div>
         <div id="qr-result"></div>
+        <button id="play-button" class="btn btn-play estado-play" style="display: none;" data-estado="play"></button>
+        <p id="repro-status"></p>
+        <button class="btn btn-volver" data-texto="Volver al menú"></button>
     </section>
 
     <!-- Cargando canción -->
     <section id="reproductor" class="pantalla pantalla-oculta fondo-cargando">
         <h2 id="repro-status">Canción lista para reproducir</h2>
-        <button id="play-button">Reproducir canción</button>
-        <button onclick="volverAlMenu()">Volver al menú</button>
+        <button id="play-button" class="estado-play" style="display: none;" data-estado="play"></button>
+        <p id="repro-status"></p>
     </section>
 
     <!-- Firebase SDK -->

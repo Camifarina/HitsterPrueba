@@ -52,3 +52,31 @@ button {
     padding: 10px 20px;
     font-size: 16px;
 }
+
+#play-button::after {
+    content: attr(data-estado);
+    font-size: 1.2rem;
+    color: white;
+    background-color: #333;
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+
+.btn::after {
+    content: attr(data-texto);
+    font-size: 1rem;
+    color: white;
+    background-color: #333;
+    padding: 10px 20px;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+/* Estilos especiales para el botón de reproducción con estado */
+.btn-play.estado-play[data-estado="play"]::after {
+    content: "Reproducir canción";
+}
+
+.btn-play.estado-pause[data-estado="pause"]::after {
+    content: "Pausar canción";
+}
