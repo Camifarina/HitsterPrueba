@@ -54,9 +54,16 @@ function iniciarEscaner() {
         mostrarPantalla("reproductor");
 
         document.getElementById("play-button").onclick = () => {
-          currentAudio.play();
-          document.getElementById("repro-status").innerText = "Reproduciendo canción...";
-        };
+          if (currentAudio.paused) {
+            currentAudio.play();
+            document.getElementById("play-button").innerText = "Pausar canción";
+            document.getElementById("repro-status").innerText = "Reproduciendo canción...";
+          } else {
+            currentAudio.pause();
+            document.getElementById("play-button").innerText = "Reproducir canción";
+            document.getElementById("repro-status").innerText = "Canción en pausa";
+          }
+        };        
       } else {
         alert("No se encontró esa canción.");
         volverAlMenu();
@@ -73,6 +80,8 @@ function volverAlMenu() {
     currentAudio.pause();
     currentAudio.currentTime = 0;
     currentAudio = null;
+    document.getElementById("play-button").innerText = "Reproducir canción";
+    document.getElementById("repro-status").innerText = "Canción lista para reproducir";
   }
   mostrarPantalla("menu");
 }
