@@ -51,11 +51,10 @@ function debugLog(msg) {
 
 function iniciarEscaner() {
   const qrResult = document.getElementById("qr-result");
-  const playButton = document.getElementById("play-button");
+  const playButton = document.getElementById("play-toggle-button");
 
   qrResult.innerText = "";
-  debugLog("mostrar boton play")
-  playButton.style.display = "none"; // ocultar botón al iniciar
+  playButton.style.display = "none"; // Ocultar al iniciar
 
   const html5QrCode = new Html5Qrcode("qr-reader");
 
@@ -64,41 +63,53 @@ function iniciarEscaner() {
     { fps: 10, qrbox: 250 },
     async (decodedText) => {
       await html5QrCode.stop();
-      qrResult.innerHTML = 'Canción lista para reproducir';
+      qrResult.innerText = "Cargando canción...";
 
-      /*    const playBtn = document.getElementById('play-btn');
-            playBtn.addEventListener('click', async () => { */
       try {
         const docRef = db.collection("canciones").doc(decodedText);
         const docSnap = await docRef.get();
-        //debugLog("Buscando documento con ID: " + decodedText);
-
 
         if (docSnap.exists) {
           const data = docSnap.data();
-          //debugLog("Documento encontrado: " + JSON.stringify(data));
 
-          // Guardamos el audio para reproducir cuando se presione el botón
+          // Detener canción anterior si hay
+          if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+          }
+
           currentAudio = new Audio(data.url);
           currentAudio.autoplay = false;
 
-          playButton.style.display = "inline-block"; // mostrar botón
+          playButton.innerText = "Reproducir";
+          playButton.style.display = "inline-block";
+          qrResult.innerText = "Canción lista.";
 
-          // Configurar evento para reproducir la canción al presionar el botón
-          playButton.onclick = null;
           playButton.onclick = () => {
-            currentAudio.play();
-            qrResult.innerText = "Reproduciendo canción...";
+            if (currentAudio.paused) {
+              currentAudio.play();
+              playButton.innerText = "Pausar";
+              qrResult.innerText = "Reproduciendo canción...";
+            } else {
+              currentAudio.pause();
+              playButton.innerText = "Reproducir";
+              qrResult.innerText = "Canción pausada.";
+            }
           };
+
+          // Al terminar, reiniciar botón
+          currentAudio.onended = () => {
+            playButton.innerText = "Reproducir";
+            qrResult.innerText = "Canción finalizada.";
+          };
+
         } else {
           qrResult.innerText = "No se encontró esa canción.";
-          //debugLog("Documento no encontrado en Firestore.");
           playButton.style.display = "none";
         }
       } catch (e) {
         qrResult.innerText = "Error al buscar la canción.";
         console.error(e);
-        //debugLog("Error al acceder a Firestore: " + e.message);
         playButton.style.display = "none";
       }
     },
@@ -110,5 +121,6 @@ function iniciarEscaner() {
     playButton.style.display = "none";
   });
 }
+
 
 
