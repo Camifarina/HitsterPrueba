@@ -63,7 +63,7 @@ function iniciarEscaner() {
         document.getElementById("play-button").setAttribute("data-estado", "play");
         mostrarPantalla("reproductor");
 
-        // Mostrar loader
+        /* // Mostrar loader
         const loader = document.getElementById("loader");
         const playButton = document.getElementById("play-button");
         const status = document.getElementById("repro-status");
@@ -86,7 +86,7 @@ function iniciarEscaner() {
           if (currentAudio.readyState >= 3) { // 3 = HAVE_FUTURE_DATA
             mostrarBoton();
           }
-        }, 500);
+        }, 500); */
 
         document.getElementById("play-button").onclick = () => {
           const btn = document.getElementById("play-button");
