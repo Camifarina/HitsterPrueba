@@ -63,18 +63,30 @@ function iniciarEscaner() {
         document.getElementById("play-button").setAttribute("data-estado", "play");
         mostrarPantalla("reproductor");
 
-        // Mostrar loader y ocultar botones/texto al principio
-        document.getElementById("loader").style.display = "block";
-        document.getElementById("play-button").style.display = "none";
-        document.getElementById("repro-status").innerText = "Cargando canción...";
+        // Mostrar loader
+        const loader = document.getElementById("loader");
+        const playButton = document.getElementById("play-button");
+        const status = document.getElementById("repro-status");
 
-        // Esperar a que esté cargado el audio
-        currentAudio.addEventListener("canplaythrough", () => {
-          // Ocultar loader y mostrar botón
-          document.getElementById("loader").style.display = "none";
-          document.getElementById("play-button").style.display = "inline-block";
-          document.getElementById("repro-status").innerText = "Canción lista para reproducir";
-        });
+        loader.style.display = "block";
+        playButton.style.display = "none";
+        status.innerText = "Cargando canción...";
+
+        // Mostrar botón después de 500ms o cuando esté listo
+        const mostrarBoton = () => {
+          loader.style.display = "none";
+          playButton.style.display = "inline-block";
+          status.innerText = "Canción lista para reproducir";
+        };
+
+        currentAudio.addEventListener("canplaythrough", mostrarBoton);
+
+        // Seguridad: mostrar igual después de 500ms por si ya está lista
+        setTimeout(() => {
+          if (currentAudio.readyState >= 3) { // 3 = HAVE_FUTURE_DATA
+            mostrarBoton();
+          }
+        }, 500);
 
         document.getElementById("play-button").onclick = () => {
           const btn = document.getElementById("play-button");
